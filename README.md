@@ -38,3 +38,5 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 - [ ] Length 23: change to queue
 - [ ] Length 24: copy from primary to secondary
 - [ ] Length 25: move from primary to secondary
+
+Inspired by the great project [Enjamb](https://github.com/TartanLlama/enjamb)
