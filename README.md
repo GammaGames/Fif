@@ -20,7 +20,7 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 - [ ] Length 7: jump
 - [ ] Length 8: jump if zero
 - [ ] Length 9: jump if neg
-- [ ] Length 10: exit
+- [x] Length 10: exit
 ### Arithmetic (everything is int)
 - [x] Length 11: add
 - [x] Length 12: sub
@@ -31,7 +31,7 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 - [x] Length 16: push
 - [x] Length 17: dup
 - [ ] Length 18: swap top 2
-- [x] Length 20: pop
+- [ ] Length 20: pop
 - [ ] Length 21: change to container 1
 - [ ] Length 22: change to container 2
 - [ ] Length 22: change to stack
