@@ -35,6 +35,10 @@ import sys
 # pop() -> stack
 # pop(0) -> queue
 
+debug = not set(sys.argv).isdisjoint(["-d", "--debug"])
+stack = []
+
+
 primary = {
     "type": "stack",
     "contents": []
@@ -45,73 +49,95 @@ secondary = {
 }
 
 
-def add_to_container():
-    pass
+def _print_debug(length, message, include_stack=False):
+    if include_stack:
+        print(f"{str(length).ljust(3)}{str(message).ljust(6)} - {', '.join(str(x) for x in stack)}")
+    else:
+        print(f"{str(length).ljust(3)}{str(message)}")
 
 
-def remove_from_container():
-    pass
+def _putc(value):
+    print(ord(stack.pop()))
+    if debug:
+        _print_debug(value, "putc", True)
 
 
-def swap_to_one():
-    pass
+def _putn(value):
+    print(stack.pop())
+    if debug:
+        _print_debug(value, "putn", True)
 
 
-def swap_to_two():
-    pass
+# Read character (chr)
+# Read line as number
+# Read line as string
+# label
+# jump
+# jump if zero
+# jump if neg
 
 
-stack = []
+def _exit(value):
+    if debug:
+        _print_debug(value, "exit")
+    quit()
 
 
-debug = not set(sys.argv).isdisjoint(["-d", "--debug"])
+def _add(value):
+    stack.append(stack.pop() + stack.pop())
+    if debug:
+        _print_debug(value, "add", True)
+
+
+def _sub(value):
+    stack.append(stack.pop() - stack.pop())
+    if debug:
+        _print_debug(value, "sub", True)
+
+
+# mul
+# div
+# mod
+
+
+def _push(value):
+    if debug:
+        _print_debug(value, "push")
+    return "push"
+
+
+def __push(value):
+    stack.append(value)
+    if debug:
+        _print_debug(value, "", True)
+
+
+def _dup(value):
+    stack.append(stack[-1])
+    if debug:
+        _print_debug(value, "dup", True)
+
+
+# swap top 2
+# pop
+
+
+commands = {
+    1: _putc,
+    2: _putn,
+    11: _add,
+    12: _sub,
+    16: _push,
+    "push": __push,
+    17: _dup
+}
 
 
 with open("tests/1.md") as f:
     command = None
     for line in f:
-        stack_changing = False
-        if debug:
-            debug_string = "#"
         length = len(line.rstrip("\n"))
-        if command is None:
-            if length == 1:
-                stack_changing = True
-                debug_string = "putc"
-                print(ord(stack.pop()))
-            elif length == 2:
-                stack_changing = True
-                debug_string = "putn"
-                print(stack.pop())
-            elif length == 11:
-                stack_changing = True
-                debug_string = "add"
-                stack.append(stack.pop() + stack.pop())
-            elif length == 12:
-                stack_changing = True
-                debug_string = "sub"
-                stack.append(stack.pop() - stack.pop())
-            elif length == 16:
-                debug_string = "push"
-                command = "push"
-            elif length == 17:
-                stack_changing = True
-                debug_string = "dup"
-                stack.append(stack[-1])
-            elif length == 20:
-                stack_changing = True
-                debug_string = "pop"
-                stack.pop()
-        else:
-            if command == "push":
-                stack_changing = True
-                if debug:
-                    debug_string = str(length)
-                stack.append(length)
-            command = None
-
-        if debug:
-            if stack_changing:
-                print(f"{debug_string.ljust(6)} - {', '.join(str(x) for x in stack)}")
-            else:
-                print(debug_string)
+        if length in commands and command is None:
+            command = commands[length](length)
+        elif command in commands:
+            command = commands[command](length)
