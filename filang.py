@@ -30,7 +30,9 @@
 25. Move from primary to secondary
 """
 
+import math
 import sys
+import grapheme
 
 # pop() -> stack
 # pop(0) -> queue
@@ -51,7 +53,7 @@ secondary = {
 
 def _print_debug(length, message, include_stack=False):
     if include_stack:
-        print(f"{str(length).ljust(3)}{str(message).ljust(6)} - {', '.join(str(x) for x in stack)}")
+        print(f"{str(length).ljust(3)}{str(message).ljust(6)} - [{', '.join(str(x) for x in stack)}]")
     else:
         print(f"{str(length).ljust(3)}{str(message)}")
 
@@ -95,6 +97,18 @@ def _sub(value):
         _print_debug(value, "sub", True)
 
 
+def _mul(value):
+    stack.append(stack.pop() * stack.pop())
+    if debug:
+        _print_debug(value, "mul", True)
+
+
+def _div(value):
+    stack.append(math.floor(stack.pop() / stack.pop()))
+    if debug:
+        _print_debug(value, "div", True)
+
+
 # mul
 # div
 # mod
@@ -127,16 +141,18 @@ commands = {
     2: _putn,
     11: _add,
     12: _sub,
+    13: _mul,
+    14: _div,
     16: _push,
     "push": __push,
     17: _dup
 }
 
 
-with open("tests/1.md") as f:
+with open("tests/1.md", encoding="utf8") as f:
     command = None
     for line in f:
-        length = len(line.rstrip("\n"))
+        length = grapheme.length(line.rstrip("\n"))
         if length in commands and command is None:
             command = commands[length](length)
         elif command in commands:
