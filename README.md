@@ -24,13 +24,13 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 ### Arithmetic (everything is int)
 - [x] Length 11: add
 - [x] Length 12: sub
-- [ ] Length 13: mul
-- [ ] Length 14: div
-- [ ] Length 15: mod
+- [x] Length 13: mul
+- [x] Length 14: div
+- [x] Length 15: mod
 ### Container (Can have 2, Stack or Queue)
 - [x] Length 16: push
 - [x] Length 17: dup
-- [ ] Length 18: swap top 2
+- [x] Length 18: swap top 2
 - [ ] Length 20: pop
 - [ ] Length 21: change to container 1
 - [ ] Length 22: change to container 2

@@ -92,7 +92,8 @@ def _add(value):
 
 
 def _sub(value):
-    stack.append(stack.pop() - stack.pop())
+    right = stack.pop()
+    stack.append(stack.pop() - right)
     if debug:
         _print_debug(value, "sub", True)
 
@@ -104,14 +105,17 @@ def _mul(value):
 
 
 def _div(value):
-    stack.append(math.floor(stack.pop() / stack.pop()))
+    right = stack.pop()
+    stack.append(math.floor(stack.pop() / right))
     if debug:
         _print_debug(value, "div", True)
 
 
-# mul
-# div
-# mod
+def _mod(value):
+    right = stack.pop()
+    stack.append(math.floor(stack.pop() % right))
+    if debug:
+        _print_debug(value, "mod", True)
 
 
 def _push(value):
@@ -132,7 +136,15 @@ def _dup(value):
         _print_debug(value, "dup", True)
 
 
-# swap top 2
+def _swp(value):
+    first = stack.pop()
+    second = stack.pop()
+    stack.append(first)
+    stack.append(second)
+    if debug:
+        _print_debug(value, "swp", True)
+
+
 # pop
 
 
@@ -143,9 +155,11 @@ commands = {
     12: _sub,
     13: _mul,
     14: _div,
+    15: _mod,
     16: _push,
     "push": __push,
-    17: _dup
+    17: _dup,
+    18: _swp
 }
 
 
