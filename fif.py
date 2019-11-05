@@ -37,7 +37,9 @@ import grapheme
 # pop() -> stack
 # pop(0) -> queue
 
-debug = not set(sys.argv).isdisjoint(["-d", "--debug"])
+debug_args = ["-d", "--debug"]
+debug = not set(sys.argv).isdisjoint(debug_args)
+args = [arg for arg in sys.argv if arg not in debug_args][1:]
 stack = []
 
 
@@ -163,7 +165,7 @@ commands = {
 }
 
 
-with open("tests/1.md", encoding="utf8") as f:
+with open(args[-1], encoding="utf8") as f:
     command = None
     for line in f:
         length = grapheme.length(line.rstrip("\n"))
