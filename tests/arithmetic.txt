@@ -1,17 +1,17 @@
 push a big three
-...
+~3~
 take the three an
 stack it in twice
 add the top
-..
+=6
 stack three again
 twice more ffffff
 subtract top
-..
+=0
 stackin the stack
 for cool math ops
 multiply them
-..
+=9
 just a final dupe
 divide and out
-..
+=1
