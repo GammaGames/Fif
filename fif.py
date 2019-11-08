@@ -1,35 +1,4 @@
-"""
-### I/O (helpers to read lines)
-1. Print character (ord)
-2. Print number
-3. Read character (chr)
-4. Read line as number
-5. Read line as string
-### Flow (no call stack)
-6. label
-7. jump
-8. jump if zero
-9. jump if neg
-10. exit
-### Arithmetic (everything is int)
-11. add
-12. sub
-13. mul
-14. div
-15. mod
-### Container (Can have 2, Stack or Queue)
-16. push
-17. dup
-18. swap top 2
-20. pop
-21. Change to container 1
-22. Change to container 2
-22. Change to stack
-23. Change to queue
-24. Copy from primary to secondary
-25. Move from primary to secondary
-"""
-
+import inspect
 import math
 import sys
 import grapheme
@@ -53,28 +22,40 @@ secondary = {
 }
 
 
-def _print_debug(length, message, include_stack=False):
-    if include_stack:
-        print(f"{str(length).ljust(3)}{str(message).ljust(6)} - [{', '.join(str(x) for x in stack)}]")
-    else:
-        print(f"{str(length).ljust(3)}{str(message)}")
+def _print_debug(length, message=None, include_stack=False):
+    if debug:
+        if message is None:
+            caller = inspect.stack()[1].function
+            if caller.startswith("_"):
+                message = caller.lstrip("_")
+
+        if include_stack:
+            print(f"{str(length).ljust(3)}{str(message).ljust(6)} - [{', '.join(str(x) for x in stack)}]")
+        else:
+            print(f"{str(length).ljust(3)}{str(message)}")
 
 
 def _putc(value):
-    print(ord(stack.pop()))
-    if debug:
-        _print_debug(value, "putc", True)
+    print(chr(stack.pop()), end="")
+    _print_debug(value, include_stack=True)
 
 
 def _putn(value):
-    print(stack.pop())
-    if debug:
-        _print_debug(value, "putn", True)
+    print(stack.pop(), end="")
+    _print_debug(value, include_stack=True)
 
 
-# Read character (chr)
-# Read line as number
-# Read line as string
+def _getn(value):
+    stack.append(int(input()))
+    _print_debug(value, include_stack=True)
+
+
+def _gets(value):
+    for ch in input():
+        stack.append(ord(ch))
+    _print_debug(value, include_stack=True)
+
+
 # label
 # jump
 # jump if zero
@@ -82,60 +63,51 @@ def _putn(value):
 
 
 def _exit(value):
-    if debug:
-        _print_debug(value, "exit")
+    _print_debug(value)
     quit()
 
 
 def _add(value):
     stack.append(stack.pop() + stack.pop())
-    if debug:
-        _print_debug(value, "add", True)
+    _print_debug(value, include_stack=True)
 
 
 def _sub(value):
     right = stack.pop()
     stack.append(stack.pop() - right)
-    if debug:
-        _print_debug(value, "sub", True)
+    _print_debug(value, include_stack=True)
 
 
 def _mul(value):
     stack.append(stack.pop() * stack.pop())
-    if debug:
-        _print_debug(value, "mul", True)
+    _print_debug(value, include_stack=True)
 
 
 def _div(value):
     right = stack.pop()
     stack.append(math.floor(stack.pop() / right))
-    if debug:
-        _print_debug(value, "div", True)
+    _print_debug(value, include_stack=True)
 
 
 def _mod(value):
     right = stack.pop()
     stack.append(math.floor(stack.pop() % right))
-    if debug:
-        _print_debug(value, "mod", True)
+    _print_debug(value, include_stack=True)
 
 
 def _push(value):
-    if debug:
-        _print_debug(value, "push")
+    _print_debug(value)
     return "push"
 
 
 def __push(value):
     stack.append(value)
-    if debug:
-        _print_debug(value, "", True)
+    _print_debug(value, "", True)
 
 
 def _dup(value):
     stack.append(stack[-1])
-    if debug:
-        _print_debug(value, "dup", True)
+    _print_debug(value, include_stack=True)
 
 
 def _swp(value):
@@ -143,16 +115,19 @@ def _swp(value):
     second = stack.pop()
     stack.append(first)
     stack.append(second)
-    if debug:
-        _print_debug(value, "swp", True)
+    _print_debug(value, include_stack=True)
 
 
-# pop
+def _pop(value):
+    stack.pop()
+    _print_debug(value, include_stack=True)
 
 
 commands = {
     1: _putc,
     2: _putn,
+    4: _getn,
+    5: _gets,
     11: _add,
     12: _sub,
     13: _mul,
@@ -161,7 +136,8 @@ commands = {
     16: _push,
     "push": __push,
     17: _dup,
-    18: _swp
+    18: _swp,
+    19: _pop
 }
 
 
