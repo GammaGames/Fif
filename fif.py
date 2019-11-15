@@ -170,8 +170,9 @@ def process(program):
     for index in range(len(program)):
         line = program[index]
         length = grapheme.length(line.rstrip("\n"))
-        if length in commands and command is None:
-            command = commands[length](line, length, index)
+        command_length = length % 32
+        if command_length in commands and command is None:
+            command = commands[command_length](line, length, index)
         elif command in commands:
             command = commands[command](line, length, index)
 
