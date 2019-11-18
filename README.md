@@ -39,4 +39,17 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 - [ ] Length 24: copy from primary to secondary
 - [ ] Length 25: move from primary to secondary
 
+## Examples:
+
+A simple program that adds two numbers from input and prints it could look like so:
+
+```
+read
+read
+add them up
+output the numbers in text console
+```
+
+You can find more examples in the [tests](tests) folder.
+
 Inspired by the great project [Enjamb](https://github.com/TartanLlama/enjamb)

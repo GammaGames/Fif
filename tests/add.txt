@@ -1,0 +1,4 @@
+read
+read
+add them up
+output the numbers in text console
