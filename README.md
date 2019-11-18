@@ -11,9 +11,9 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 
 ### I/O (helpers to read lines)
 - [x] Length 1: print character - printed using `ord(pop())`
-- [x] Length 2: print number
+- [x] Length 2: print integer
 - [ ] Length 3: ?
-- [x] Length 4: read line as number
+- [x] Length 4: read line as integer
 - [x] Length 5: read line as string
 ### Flow (no call stack)
 - [ ] Length 6: label
