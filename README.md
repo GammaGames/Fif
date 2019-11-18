@@ -1,7 +1,7 @@
 # Fif
 */fīf/*
 
-Fif is a stack based esoteric programming language that uses line lengths to perform operations, allowing two programs that read completely differently to execute the exact same process. The length of each line is modulo divided with 32, meaning a line of length 2 and 34 will produce the same output.
+Fif is a stack based esoteric programming language that uses line lengths to perform operations, allowing two programs that read completely differently to execute the exact same process. The length of each line is modulo divided with 32, meaning a line of length 2 and 34 will produce the same output. Every value is stored as an integer, but characters are printed as their unicode number.
 
 While Fif is based on stacks, you can swap the stack type between FiFo and FiLo. You also have multiple stacks to work with, with the power to move values between.
 
