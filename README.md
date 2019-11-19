@@ -17,9 +17,9 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 - [x] Length 5: read line as string
 ### Flow (no call stack)
 - [ ] Length 6: label
-- [ ] Length 7: jump
-- [ ] Length 8: jump if zero
-- [ ] Length 9: jump if neg
+- [ ] Length 7: jump to label
+- [ ] Length 8: jump to label if zero
+- [ ] Length 9: jump to label if neg
 - [x] Length 10: exit
 ### Arithmetic (everything is int)
 - [x] Length 11: add
