@@ -165,6 +165,11 @@ commands = {
 }
 
 
+def pre_process(program):
+    pass
+    # TODO parse labels
+
+
 def process(program):
     command = None
     for index in range(len(program)):
