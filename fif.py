@@ -28,7 +28,7 @@ def _print_debug(length, message=None, include_stack=False):
         if message is None:
             caller = inspect.stack()[1].function
             if caller.startswith("_"):
-                message = caller.lstrip("_")
+                message = caller[1:]
 
         if include_stack:
             print(f"{str(length).ljust(3)}{str(message).ljust(6)} - [{', '.join(str(x) for x in stack)}]")
@@ -63,7 +63,6 @@ def _lbl(line, length, index):
 
 
 def __lbl(line, length, index):
-    labels[line] = index
     _print_debug(length)
 
 
@@ -115,12 +114,12 @@ def _mod(line, length, index):
     _print_debug(length, include_stack=True)
 
 
-def _push(line, length, index):
+def _psh(line, length, index):
     _print_debug(length)
-    return "push"
+    return "psh"
 
 
-def __push(line, length, index):
+def __psh(line, length, index):
     stack.append(length)
     _print_debug(length, "", True)
 
@@ -143,6 +142,14 @@ def _pop(line, length, index):
     _print_debug(length, include_stack=True)
 
 
+def _p_lbl(line, length, index):
+    return "p_lbl"
+
+
+def __p_lbl(line, length, index):
+    labels[line] = index
+
+
 commands = {
     1: _putc,
     2: _putn,
@@ -157,11 +164,17 @@ commands = {
     13: _mul,
     14: _div,
     15: _mod,
-    16: _push,
-    "push": __push,
+    16: _psh,
+    "psh": __psh,
     17: _dup,
     18: _swp,
     19: _pop
+}
+
+
+parse = {
+    6: _p_lbl,
+    "p_lbl": __p_lbl
 }
 
 
@@ -173,13 +186,18 @@ class Fif():
         self.labels = {}
 
     def preprocess(self):
-        # TODO parse labels
-        pass
+        command = None
+        for index in range(len(self.program)):
+            line = self.program[index]
+            length = grapheme.length(line.rstrip("\n"))
+            command_length = length % 32
+            if command_length in parse and command is None:
+                command = parse[command_length](line, length, index)
+            elif command in parse:
+                command = parse[command](line, length, index)
 
     def process(self):
-        result = []
         command = None
-
         for index in range(len(self.program)):
             line = self.program[index]
             length = grapheme.length(line.rstrip("\n"))
@@ -188,8 +206,6 @@ class Fif():
                 command = commands[command_length](line, length, index)
             elif command in commands:
                 command = commands[command](line, length, index)
-
-        return result
 
     def execute(self, program):
         self.program = program
@@ -200,9 +216,10 @@ class Fif():
 def main():
     fif = Fif(debug)
     program = []
+
     with open(args[-1], encoding="utf8") as f:
-        for line in f:
-            program.append(line)
+        program = f.readlines()
+
     fif.execute(program)
 
 
