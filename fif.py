@@ -165,29 +165,45 @@ commands = {
 }
 
 
-def pre_process(program):
-    pass
-    # TODO parse labels
+class Fif():
+    def __init__(self, debug=False):
+        self.debug = debug
+        self.program = None
+        self.stack = []
+        self.labels = {}
 
+    def preprocess(self):
+        # TODO parse labels
+        pass
 
-def process(program):
-    command = None
-    for index in range(len(program)):
-        line = program[index]
-        length = grapheme.length(line.rstrip("\n"))
-        command_length = length % 32
-        if command_length in commands and command is None:
-            command = commands[command_length](line, length, index)
-        elif command in commands:
-            command = commands[command](line, length, index)
+    def process(self):
+        result = []
+        command = None
+
+        for index in range(len(self.program)):
+            line = self.program[index]
+            length = grapheme.length(line.rstrip("\n"))
+            command_length = length % 32
+            if command_length in commands and command is None:
+                command = commands[command_length](line, length, index)
+            elif command in commands:
+                command = commands[command](line, length, index)
+
+        return result
+
+    def execute(self, program):
+        self.program = program
+        self.preprocess()
+        self.process()
 
 
 def main():
+    fif = Fif(debug)
     program = []
     with open(args[-1], encoding="utf8") as f:
         for line in f:
             program.append(line)
-    process(program)
+    fif.execute(program)
 
 
 if __name__ == '__main__':
