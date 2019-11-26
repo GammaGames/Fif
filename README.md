@@ -1,5 +1,5 @@
-# Fif
-*/fīf/*
+# Fif <span style="font-size: 0.5em; font-weight: normal;">*/fīf/*</span>
+
 
 Fif is a stack based esoteric programming language that uses line lengths to perform operations, allowing two programs that read completely differently to execute the exact same process. The length of each line is modulo divided with 32, meaning a line of length 2 and 34 will produce the same output. Every value is stored as an integer, and characters are printed according to their unicode value.
 
