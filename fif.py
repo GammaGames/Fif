@@ -184,7 +184,7 @@ class Fif():
 
 
 @click.command()
-@click.option("--debug", "-d", is_flag=True)
+@click.option("--debug", "-d", is_flag=True, help="Print debug information")
 @click.argument('filename', type=click.File("r"))
 def main(debug, filename):
     fif = Fif(debug)
