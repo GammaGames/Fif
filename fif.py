@@ -15,8 +15,8 @@ class Fif():
         self.stack = []
         self.labels = {}
         self.parse = {
-            6: self._p_labl,
-            "p_labl": self.__p_labl
+            6: self._parse_labl,
+            "set_labl": self._set_labl
         }
         self.commands = {
             1: self._putc,
@@ -26,7 +26,10 @@ class Fif():
             6: self._labl,
             "labl": self.__labl,
             7: self._jump,
-            "jump": self.__jump,
+            8: self._jump_if_zero,
+            9: self._jump_if_neg,
+            10: self._exit,
+            "do_jump": self._do_jump,
             11: self._add,
             12: self._sub,
             13: self._mul,
@@ -81,14 +84,19 @@ class Fif():
 
     def _jump(self, line, length, index):
         self._print_debug(length)
-        return "jump"
+        return "do_jump"
 
-    def __jump(self, line, length, index):
+    def _jump_if_zero(self, line, length, index):
+        self._print_debug(length)
+        return "do_jump" if self.stack[-1] == 0 else "noop"
+
+    def _jump_if_neg(self, line, length, index):
+        self._print_debug(length)
+        return "do_jump" if self.stack[-1] < 0 else "noop"
+
+    def _do_jump(self, line, length, index):
         self.index = self.labels[line]
         self._print_debug(self.index, "jump")
-
-    # jump if zero
-    # jump if neg
 
     def _exit(self, line, length, index):
         self._print_debug(length, "exit")
@@ -140,10 +148,10 @@ class Fif():
         self.stack.pop()
         self._print_debug(length, include_stack=True)
 
-    def _p_labl(self, line, length, index):
-        return "p_labl"
+    def _parse_labl(self, line, length, index):
+        return "set_labl"
 
-    def __p_labl(self, line, length, index):
+    def _set_labl(self, line, length, index):
         self.labels[line] = index
 
     def preprocess(self):
