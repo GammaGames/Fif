@@ -26,8 +26,8 @@ class Fif():
             6: self._labl,
             "labl": self.__labl,
             7: self._jump,
-            8: self._jump_if_zero,
-            9: self._jump_if_neg,
+            8: self._jz,
+            9: self._jn,
             10: self._exit,
             "do_jump": self._do_jump,
             11: self._add,
@@ -49,10 +49,11 @@ class Fif():
                 if caller.startswith("_"):
                     message = caller[1:]
 
+            text = f"line {str(self.index + 1).rjust(3)}: {str(length).ljust(3)}{str(message).ljust(6)}"
             if include_stack:
-                print(f"{str(length).ljust(3)}{str(message).ljust(6)} - [{', '.join(str(x) for x in self.stack)}]")
+                print(f"{text} - [{', '.join(str(x) for x in self.stack)}]")
             else:
-                print(f"{str(length).ljust(3)}{str(message)}")
+                print(text)
 
     def _putc(self, line, length, index):
         popped = chr(self.stack.pop())
@@ -86,12 +87,12 @@ class Fif():
         self._print_debug(length)
         return "do_jump"
 
-    def _jump_if_zero(self, line, length, index):
-        self._print_debug(length)
+    def _jz(self, line, length, index):
+        self._print_debug(length, include_stack=True)
         return "do_jump" if self.stack[-1] == 0 else "noop"
 
-    def _jump_if_neg(self, line, length, index):
-        self._print_debug(length)
+    def _jn(self, line, length, index):
+        self._print_debug(length, include_stack=True)
         return "do_jump" if self.stack[-1] < 0 else "noop"
 
     def _do_jump(self, line, length, index):
@@ -155,7 +156,9 @@ class Fif():
         self.labels[line] = index
 
     def preprocess(self):
+        self.labels = {}
         command = None
+
         for index in range(len(self.program)):
             line = self.program[index].rstrip("\n")
             length = grapheme.length(line.rstrip("\n"))
@@ -166,15 +169,19 @@ class Fif():
                 command = self.parse[command](line, length, index)
 
     def process(self):
+        self.index = 0
+        self.stack = []
         command = None
-        for index in range(len(self.program)):
-            line = self.program[index].rstrip("\n")
+
+        while self.index < len(self.program):
+            line = self.program[self.index].rstrip("\n")
             length = grapheme.length(line.rstrip("\n"))
             command_length = length % 32
             if command_length in self.commands and command is None:
-                command = self.commands[command_length](line, length, index)
+                command = self.commands[command_length](line, length, self.index)
             elif command in self.commands:
-                command = self.commands[command](line, length, index)
+                command = self.commands[command](line, length, self.index)
+            self.index += 1
 
     def execute(self, program):
         self.program = program
@@ -182,12 +189,16 @@ class Fif():
         self.process()
 
 
+def execute(program, debug=False):
+    fif = Fif(debug)
+    fif.execute(program)
+
+
 @click.command()
 @click.option("--debug", "-d", is_flag=True, help="Print debug information")
 @click.argument('filename', type=click.File("r"))
 def main(debug, filename):
-    fif = Fif(debug)
-    fif.execute(filename.readlines())
+    execute(filename.readlines(), debug=debug)
 
 
 if __name__ == "__main__":
