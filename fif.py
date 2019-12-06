@@ -49,7 +49,8 @@ class Fif():
                 if caller.startswith("_"):
                     message = caller[1:]
 
-            text = f"line {str(self.index + 1).rjust(3)}: {str(length).ljust(3)}{str(message).ljust(6)}"
+            line_number = f"line {str(self.index + 1).rjust(len(str(len(self.program))))}"
+            text = f"{line_number}: {str(length).ljust(3)}{str(message).ljust(6)}"
             if include_stack:
                 print(f"{text} - [{', '.join(str(x) for x in self.stack)}]")
             else:
