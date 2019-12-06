@@ -3,7 +3,7 @@
 
 Fif is a stack based esoteric programming language that uses line lengths to perform operations, allowing two programs that read completely differently to execute the exact same process. The length of each line is modulo divided with 32, meaning a line of length 2 and 34 will produce the same output. Every value is stored as an integer, and characters are printed according to their unicode value.
 
-While Fif is based on stacks, you can swap the stack type between FiFo and FiLo. You also have multiple stacks to work with, with the power to move values between.
+While Fif is based on stacks, you can swap the stack type between FiFo and FiLo. You also have multiple stacks to work with and the power to move values between. New stacks are created with labels, 
 
 #### FiF currently supports only a subset of planned features
 
@@ -17,9 +17,9 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 - [x] Length 5: read line as string
 ### Flow (no call stack)
 - [x] Length 6: label
-- [ ] Length 7: jump to label
-- [ ] Length 8: jump to label if zero
-- [ ] Length 9: jump to label if neg
+- [x] Length 7: jump to label
+- [x] Length 8: jump to label if zero
+- [x] Length 9: jump to label if neg
 - [x] Length 10: exit
 ### Arithmetic (everything is int)
 - [x] Length 11: add
@@ -32,12 +32,12 @@ While Fif is based on stacks, you can swap the stack type between FiFo and FiLo.
 - [x] Length 17: dup
 - [x] Length 18: swap top 2
 - [x] Length 19: pop
-- [ ] Length 20: change to stack
-- [ ] Length 21: change to queue
-- [ ] Length 22: change to container 1
-- [ ] Length 23: change to container 2
-- [ ] Length 24: copy from primary to secondary
-- [ ] Length 25: move from primary to secondary
+- [ ] Length 20: change current to stack
+- [ ] Length 21: change current to queue
+- [ ] Length 22: change to stack with label
+- [ ] Length 23: ?
+- [ ] Length 24: dup from current, push to label
+- [ ] Length 25: pop from current, push to label
 
 ## Examples:
 
