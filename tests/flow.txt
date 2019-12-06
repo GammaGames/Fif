@@ -1,5 +1,28 @@
-1234567
+0123456789012345
+12
+
+label6
+subtract one
+1234567890123456
+1
+123456789012
+12345678
+jump if zero
+123456789
+jump if neg
+jump567
 always jump
-123456
+
+label6
 always jump
-1234567890
+jump567
+subtract one
+
+label6
+jump if zero
+jump567
+subtract one
+
+label6
+jump if neg
+exit------
