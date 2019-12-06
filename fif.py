@@ -39,7 +39,8 @@ class Fif():
             "push": self.__push,
             17: self._dup,
             18: self._swap,
-            19: self._pop
+            19: self._pop,
+            "noop": self._noop
         }
 
     def _print_debug(self, length, message=None, include_stack=False):
@@ -79,22 +80,26 @@ class Fif():
 
     def _labl(self, line, length, index):
         self._print_debug(length)
-        return "lbl"
+        return "labl"
 
     def __labl(self, line, length, index):
-        self._print_debug(length)
+        # Essentally a noop
+        pass
+        # self._print_debug(length)
 
     def _jump(self, line, length, index):
         self._print_debug(length)
         return "do_jump"
 
     def _jz(self, line, length, index):
-        self._print_debug(length, include_stack=True)
-        return "do_jump" if self.stack[-1] == 0 else "noop"
+        check = self.stack[-1] == 0
+        self._print_debug(length, message=f"jz {'T' if check else 'F'}", include_stack=True)
+        return "do_jump" if check else "noop"
 
     def _jn(self, line, length, index):
-        self._print_debug(length, include_stack=True)
-        return "do_jump" if self.stack[-1] < 0 else "noop"
+        check = self.stack[-1] < 0
+        self._print_debug(length, message=f"jn {'T' if check else 'F'}", include_stack=True)
+        return "do_jump" if check else "noop"
 
     def _do_jump(self, line, length, index):
         self.index = self.labels[line]
@@ -149,6 +154,9 @@ class Fif():
     def _pop(self, line, length, index):
         self.stack.pop()
         self._print_debug(length, include_stack=True)
+
+    def _noop(self, line, length, index):
+        self._print_debug(length)
 
     def _parse_labl(self, line, length, index):
         return "set_labl"
