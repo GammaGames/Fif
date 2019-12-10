@@ -12,8 +12,11 @@ class Fif():
         self.debug = debug
         self.program = None
         self.index = 0
-        self.stack = []
         self.labels = {}
+        self.stack_key = 0
+        self.stacks = {
+            self.stack_key: []
+        }
         self.parse = {
             6: self._parse_labl,
             "set_labl": self._set_labl
@@ -53,29 +56,29 @@ class Fif():
             line_number = f"line {str(self.index + 1).rjust(len(str(len(self.program))))}"
             text = f"{line_number}: {str(length).ljust(3)}{str(message).ljust(6)}"
             if include_stack:
-                print(f"{text} - [{', '.join(str(x) for x in self.stack)}]")
+                print(f"{text} - [{', '.join(str(x) for x in self.stacks[self.stack_key])}]")
             else:
                 print(text)
 
     def _putc(self, line, length, index):
-        popped = chr(self.stack.pop())
+        popped = chr(self.stacks[self.stack_key].pop())
         if not self.debug:
             print(popped, end="")
         self._print_debug(length, message=f"putc {popped}", include_stack=True)
 
     def _putn(self, line, length, index):
-        popped = self.stack.pop()
+        popped = self.stacks[self.stack_key].pop()
         if not self.debug:
             print(popped, end="")
         self._print_debug(length, message=f"putn {popped}", include_stack=True)
 
     def _getn(self, line, length, index):
-        self.stack.append(int(input()))
+        self.stacks[self.stack_key].append(int(input()))
         self._print_debug(length, include_stack=True)
 
     def _gets(self, line, length, index):
         for ch in input():
-            self.stack.append(ord(ch))
+            self.stacks[self.stack_key].append(ord(ch))
         self._print_debug(length, include_stack=True)
 
     def _labl(self, line, length, index):
@@ -85,19 +88,18 @@ class Fif():
     def __labl(self, line, length, index):
         # Essentally a noop
         pass
-        # self._print_debug(length)
 
     def _jump(self, line, length, index):
         self._print_debug(length)
         return "do_jump"
 
     def _jz(self, line, length, index):
-        check = self.stack[-1] == 0
+        check = self.stacks[self.stack_key][-1] == 0
         self._print_debug(length, message=f"jz {'T' if check else 'F'}", include_stack=True)
         return "do_jump" if check else "noop"
 
     def _jn(self, line, length, index):
-        check = self.stack[-1] < 0
+        check = self.stacks[self.stack_key][-1] < 0
         self._print_debug(length, message=f"jn {'T' if check else 'F'}", include_stack=True)
         return "do_jump" if check else "noop"
 
@@ -110,26 +112,26 @@ class Fif():
         quit()
 
     def _add(self, line, length, index):
-        self.stack.append(self.stack.pop() + self.stack.pop())
+        self.stacks[self.stack_key].append(self.stacks[self.stack_key].pop() + self.stacks[self.stack_key].pop())
         self._print_debug(length, include_stack=True)
 
     def _sub(self, line, length, index):
-        right = self.stack.pop()
-        self.stack.append(self.stack.pop() - right)
+        right = self.stacks[self.stack_key].pop()
+        self.stacks[self.stack_key].append(self.stacks[self.stack_key].pop() - right)
         self._print_debug(length, include_stack=True)
 
     def _mul(self, line, length, index):
-        self.stack.append(self.stack.pop() * self.stack.pop())
+        self.stacks[self.stack_key].append(self.stacks[self.stack_key].pop() * self.stacks[self.stack_key].pop())
         self._print_debug(length, include_stack=True)
 
     def _div(self, line, length, index):
-        right = self.stack.pop()
-        self.stack.append(math.floor(self.stack.pop() / right))
+        right = self.stacks[self.stack_key].pop()
+        self.stacks[self.stack_key].append(math.floor(self.stacks[self.stack_key].pop() / right))
         self._print_debug(length, include_stack=True)
 
     def _mod(self, line, length, index):
-        right = self.stack.pop()
-        self.stack.append(math.floor(self.stack.pop() % right))
+        right = self.stacks[self.stack_key].pop()
+        self.stacks[self.stack_key].append(math.floor(self.stacks[self.stack_key].pop() % right))
         self._print_debug(length, include_stack=True)
 
     def _push(self, line, length, index):
@@ -137,22 +139,22 @@ class Fif():
         return "push"
 
     def __push(self, line, length, index):
-        self.stack.append(length)
+        self.stacks[self.stack_key].append(length)
         self._print_debug(length, "", True)
 
     def _dup(self, line, length, index):
-        self.stack.append(self.stack[-1])
+        self.stacks[self.stack_key].append(self.stacks[self.stack_key][-1])
         self._print_debug(length, include_stack=True)
 
     def _swap(self, line, length, index):
-        first = self.stack.pop()
-        second = self.stack.pop()
-        self.stack.append(first)
-        self.stack.append(second)
+        first = self.stacks[self.stack_key].pop()
+        second = self.stacks[self.stack_key].pop()
+        self.stacks[self.stack_key].append(first)
+        self.stacks[self.stack_key].append(second)
         self._print_debug(length, include_stack=True)
 
     def _pop(self, line, length, index):
-        self.stack.pop()
+        self.stacks[self.stack_key].pop()
         self._print_debug(length, include_stack=True)
 
     def _noop(self, line, length, index):
@@ -179,7 +181,10 @@ class Fif():
 
     def process(self):
         self.index = 0
-        self.stack = []
+        self.stack_index = 0
+        self.stacks = {
+            self.stack_index: []
+        }
         command = None
 
         while self.index < len(self.program):
