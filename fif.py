@@ -1,3 +1,4 @@
+from pathlib import Path
 import inspect
 import math
 import grapheme
@@ -13,7 +14,8 @@ class Fif():
         self.program = None
         self.index = 0
         self.labels = {}
-        self.stack_key = 0
+        self.program_name = "Default"
+        self.stack_key = self.program_name
         self.stacks = {
             self.stack_key: [],
         }
@@ -176,6 +178,9 @@ class Fif():
         self.stacks[self.stack_key].pop(pop_index)
         self._print_debug(length, include_stack=True)
 
+    def _stck(self, line, length, index):
+        pass
+
     def _noop(self, line, length, index):
         self._print_debug(length)
 
@@ -200,9 +205,12 @@ class Fif():
 
     def process(self):
         self.index = 0
-        self.stack_index = 0
+        self.stack_key = self.program_name
         self.stacks = {
-            self.stack_index: []
+            self.stack_key: []
+        }
+        self.stack_indexes = {
+            self.stack_key: -1
         }
         command = None
 
@@ -216,22 +224,25 @@ class Fif():
                 command = self.commands[command](line, length, self.index)
             self.index += 1
 
-    def execute(self, program):
+    def execute(self, program, program_name=None):
         self.program = program
+        if program_name is not None:
+            self.program_name = program_name
         self.preprocess()
         self.process()
 
 
-def execute(program, debug=False):
+def execute(program, program_name=None, debug=False):
     fif = Fif(debug)
-    fif.execute(program)
+    fif.execute(program, program_name)
 
 
 @click.command()
 @click.option("--debug", "-d", is_flag=True, help="Print debug information")
 @click.argument('filename', type=click.File("r"))
 def main(debug, filename):
-    execute(filename.readlines(), debug=debug)
+    program_name = Path(filename.name).resolve().stem
+    execute(filename.readlines(), program_name, debug=debug)
 
 
 if __name__ == "__main__":
