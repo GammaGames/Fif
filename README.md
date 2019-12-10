@@ -47,7 +47,7 @@ A simple program that adds two numbers from input and prints it could look like 
 read
 read
 add them up
-output the numbers in text console
+then output numbers in the console
 ```
 
 You can find more examples in the [tests](tests) folder.
