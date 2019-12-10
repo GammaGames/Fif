@@ -15,7 +15,10 @@ class Fif():
         self.labels = {}
         self.stack_key = 0
         self.stacks = {
-            self.stack_key: []
+            self.stack_key: [],
+        }
+        self.stack_indexes = {
+            self.stack_key: -1
         }
         self.parse = {
             6: self._parse_labl,
@@ -61,13 +64,15 @@ class Fif():
                 print(text)
 
     def _putc(self, line, length, index):
-        popped = chr(self.stacks[self.stack_key].pop())
+        pop_index = self.stack_indexes[self.stack_key]
+        popped = chr(self.stacks[self.stack_key].pop(pop_index))
         if not self.debug:
             print(popped, end="")
         self._print_debug(length, message=f"putc {popped}", include_stack=True)
 
     def _putn(self, line, length, index):
-        popped = self.stacks[self.stack_key].pop()
+        pop_index = self.stack_indexes[self.stack_key]
+        popped = self.stacks[self.stack_key].pop(pop_index)
         if not self.debug:
             print(popped, end="")
         self._print_debug(length, message=f"putn {popped}", include_stack=True)
@@ -112,26 +117,38 @@ class Fif():
         quit()
 
     def _add(self, line, length, index):
-        self.stacks[self.stack_key].append(self.stacks[self.stack_key].pop() + self.stacks[self.stack_key].pop())
+        pop_index = self.stack_indexes[self.stack_key]
+        left = self.stacks[self.stack_key].pop(pop_index)
+        right = self.stacks[self.stack_key].pop(pop_index)
+        self.stacks[self.stack_key].append(left + right)
         self._print_debug(length, include_stack=True)
 
     def _sub(self, line, length, index):
-        right = self.stacks[self.stack_key].pop()
-        self.stacks[self.stack_key].append(self.stacks[self.stack_key].pop() - right)
+        pop_index = self.stack_indexes[self.stack_key]
+        right = self.stacks[self.stack_key].pop(pop_index)
+        left = self.stacks[self.stack_key].pop(pop_index)
+        self.stacks[self.stack_key].append(left - right)
         self._print_debug(length, include_stack=True)
 
     def _mul(self, line, length, index):
-        self.stacks[self.stack_key].append(self.stacks[self.stack_key].pop() * self.stacks[self.stack_key].pop())
+        pop_index = self.stack_indexes[self.stack_key]
+        left = self.stacks[self.stack_key].pop(pop_index)
+        right = self.stacks[self.stack_key].pop(pop_index)
+        self.stacks[self.stack_key].append(left * right)
         self._print_debug(length, include_stack=True)
 
     def _div(self, line, length, index):
-        right = self.stacks[self.stack_key].pop()
-        self.stacks[self.stack_key].append(math.floor(self.stacks[self.stack_key].pop() / right))
+        pop_index = self.stack_indexes[self.stack_key]
+        right = self.stacks[self.stack_key].pop(pop_index)
+        left = self.stacks[self.stack_key].pop(pop_index)
+        self.stacks[self.stack_key].append(math.floor(left / right))
         self._print_debug(length, include_stack=True)
 
     def _mod(self, line, length, index):
-        right = self.stacks[self.stack_key].pop()
-        self.stacks[self.stack_key].append(math.floor(self.stacks[self.stack_key].pop() % right))
+        pop_index = self.stack_indexes[self.stack_key]
+        right = self.stacks[self.stack_key].pop(pop_index)
+        left = self.stacks[self.stack_key].pop(pop_index)
+        self.stacks[self.stack_key].append(math.floor(left % right))
         self._print_debug(length, include_stack=True)
 
     def _push(self, line, length, index):
@@ -147,14 +164,16 @@ class Fif():
         self._print_debug(length, include_stack=True)
 
     def _swap(self, line, length, index):
-        first = self.stacks[self.stack_key].pop()
-        second = self.stacks[self.stack_key].pop()
+        pop_index = self.stack_indexes[self.stack_key]
+        first = self.stacks[self.stack_key].pop(pop_index)
+        second = self.stacks[self.stack_key].pop(pop_index)
         self.stacks[self.stack_key].append(first)
         self.stacks[self.stack_key].append(second)
         self._print_debug(length, include_stack=True)
 
     def _pop(self, line, length, index):
-        self.stacks[self.stack_key].pop()
+        pop_index = self.stack_indexes[self.stack_key]
+        self.stacks[self.stack_key].pop(pop_index)
         self._print_debug(length, include_stack=True)
 
     def _noop(self, line, length, index):
