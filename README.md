@@ -50,6 +50,15 @@ add them up
 then output numbers in the console
 ```
 
+It can also look like the following:
+
+```
+give
+nums
+i take them
+mash em and give the result to you
+```
+
 You can find more examples in the [tests](tests) folder.
 
 Inspired by the great project [Enjamb](https://github.com/TartanLlama/enjamb)
