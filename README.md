@@ -1,7 +1,16 @@
 # Fif
 */fīf/*
 
-Fif is a stack based esoteric programming language that uses line lengths to perform operations, allowing two programs that read completely differently to execute the exact same process. The length of each line is modulo divided with 32, meaning a line of length 2 and 34 will produce the same output. Every value is stored as an integer, and characters are printed according to their unicode value.
+```
+0101
+five
+deify plums
+They play the war drum out of time
+```
+
+Fif is a stack based esoteric programming language that uses line lengths to perform operations, allowing two programs that read completely differently to execute the exact same process. The above snippet is just one of many you could write to read two numbers from input, add them, and print the result. 
+
+The length of each line is modulo divided with 32, meaning a line of length 2 and 34 will produce the same output. Every value is stored as an integer and characters are printed according to their unicode value.
 
 While Fif is based on stacks, you can swap the stack type between FiFo and FiLo. You also have multiple stacks to work with and the power to move values between. New stacks are created with labels, 
 
@@ -48,15 +57,6 @@ read
 read
 add them up
 then output numbers in the console
-```
-
-It can also look like the following:
-
-```
-give
-nums
-i take them
-mash em and give the result to you
 ```
 
 You can find more examples in the [tests](tests) folder.
